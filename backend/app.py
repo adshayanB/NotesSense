@@ -110,7 +110,6 @@ def sendNotes():
     # Store the pdf created
     pdf.output(f"{fileName}.pdf") 
 
-
    # Create email service 
     emailService = sendpdf("emailsendingpdf@gmail.com", 
                 f"{toEmail}", 
@@ -122,6 +121,7 @@ def sendNotes():
 
   #  send email
     emailService.email_send()
+    #Create pdf string
     with open(f"{fileName}.pdf", "rb") as pdf_file:
         encoded_string = base64.b64encode(pdf_file.read())
     os.remove(f"{fileName}.pdf")
@@ -137,7 +137,5 @@ def deleteFile ():
 
     return {"message": "File deleted"}
 
-
-    
 if __name__ == "__main__":
     app.run(debug=True)
