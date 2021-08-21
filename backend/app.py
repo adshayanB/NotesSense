@@ -7,7 +7,6 @@ from flask import request, jsonify, Flask
 from google.cloud import vision
 import io
 
-
 app = Flask(__name__)
 client = vision.ImageAnnotatorClient()
 
