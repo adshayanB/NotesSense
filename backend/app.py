@@ -68,7 +68,7 @@ def sendNodesSpeech():
         #os.remove("test.txt")
 
     except:
-         print('Sorry.. run again...')
+         return {"message": "Please Record again"}
 
     return {"message": "works"}
 
