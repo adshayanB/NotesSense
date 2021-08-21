@@ -2,6 +2,6 @@
 
 NotesSense - Hack the 6ix
 
-Categories:
+Categories:<br>
 GCP <br>
 Accesiblity
