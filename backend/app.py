@@ -43,7 +43,6 @@ def sendNodesSpeech():
         f.write(text)
 
         pdf = FPDF()   
-    
     # Add a page
         pdf.add_page()
         pdf.set_font("Times", size = 15)
