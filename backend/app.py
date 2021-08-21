@@ -15,14 +15,17 @@ client = vision.ImageAnnotatorClient()
 
 load_dotenv()  # take environment variables from .env.
 
-@app.route('/sendNotes/Speech2Text')
+@app.route('/sendNotes/Speech2Text', methods=['POST'])
 def sendNodesSpeech():
     r = sr.Recognizer()
+    f = request.files['audio']
 
-    with sr.AudioFile('test.wav') as source:
+    with open ('test1.wav', 'wb') as audio:
+        f.save(audio)
+    with sr.AudioFile('test1.wav') as source:
         audio_text= r.listen(source)
+
     try:
-        
         # using google speech recognition
         text = r.recognize_google(audio_text)
         print('Converting audio transcripts into text ...')
