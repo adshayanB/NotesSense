@@ -7,15 +7,16 @@ import {
   Platform,
   Image,
   ActivityIndicator,
-} from "react-native";
-import { Camera } from "expo-camera";
-import IconBadge from "../components/custom-iconBadge";
-import FloatingButton from "../components/floatingButton";
-import CustomPopupAlert from "../components/custom-popup-alert";
-import Toast from "react-native-toast-message";
-import CustomInputBox from "../components/custom-inputBox";
-import * as FileSystem from "expo-file-system";
-import { GestureHandlerRefContext } from "@react-navigation/stack";
+} from 'react-native';
+import { Camera } from 'expo-camera';
+import IconBadge from '../components/custom-iconBadge';
+import FloatingButton from '../components/floatingButton';
+import CustomPopupAlert from '../components/custom-popup-alert';
+import Toast from 'react-native-toast-message';
+import CustomInputBox from '../components/custom-inputBox';
+import * as FileSystem from 'expo-file-system';
+import Loading from '../assets/loading/loading.gif';
+import { GestureHandlerRefContext } from '@react-navigation/stack';
 
 const CameraScreen = ({ navigation, route }) => {
   //  camera permissions
@@ -338,7 +339,8 @@ const CameraScreen = ({ navigation, route }) => {
         )}
         {showFetchLoading && (
           <View style={styles.backDrop}>
-            <ActivityIndicator size={70} color="#36d1dc" />
+            <Image source={Loading} style={styles.loading} />
+            {/* <ActivityIndicator size={70} color="#36d1dc" /> */}
           </View>
         )}
       </View>
@@ -396,6 +398,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#000000cc",
     zIndex: 2,
+  },
+  loading: {
+    position: 'relative',
+    transform: [{ translateX: 20 }],
   },
 });
 
