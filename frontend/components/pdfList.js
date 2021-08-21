@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,8 +6,8 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-} from "react-native";
-import * as FileSystem from "expo-file-system";
+} from 'react-native';
+import * as FileSystem from 'expo-file-system';
 
 const PdfList = (props) => {
   const { updateList } = props;
@@ -38,7 +38,6 @@ const PdfList = (props) => {
   // on screen  load all the pdf files saved on device
   useEffect(() => {
     getAllFilesInDirectory();
-    console.log(updateList);
   }, [updateList]);
 
   const renderFiles = ({ item }) => {
@@ -82,25 +81,25 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   emptyText: {
     fontSize: 25,
-    color: "#9e9e9e",
+    color: '#9e9e9e',
   },
   itemContainer: {
     flex: 0.5,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginHorizontal: 8,
     marginVertical: 8,
-    backgroundColor: "#eee",
+    backgroundColor: '#eee',
     height: 200,
     borderRadius: 12,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0.5,
       height: 2,
@@ -110,30 +109,30 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   row: {
-    justifyContent: "space-evenly",
+    justifyContent: 'space-evenly',
   },
   fileImage: {
-    width: "100%",
+    width: '100%',
     flex: 5,
-    resizeMode: "stretch",
+    resizeMode: 'stretch',
   },
   fileText: {
     fontSize: 15,
-    overflow: "hidden",
+    overflow: 'hidden',
     paddingHorizontal: 12,
   },
   textContainer: {
     flex: 1,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    backgroundColor: "#fff",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    backgroundColor: '#fff',
     borderBottomRightRadius: 12,
     borderBottomLeftRadius: 12,
   },
   emptyNotes: {
     flex: 1,
-    display: "flex",
+    display: 'flex',
   },
 });
