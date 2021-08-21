@@ -26,9 +26,9 @@ def sendNodesSpeech():
 
     f = request.files['audio']
 
-    with open ('test1.wav', 'wb') as audio:
+    with open (f'{fileName}.wav', 'wb') as audio:
         f.save(audio)
-    with sr.AudioFile('test1.wav') as source:
+    with sr.AudioFile(f'{fileName}.wav') as source:
         audio_text= r.listen(source)
     try:   
         # using google speech recognition
@@ -63,14 +63,17 @@ def sendNodesSpeech():
 
     #  send email
         emailService.email_send()
+        with open(f"{fileName}.pdf", "rb") as pdf_file:
+            encoded_bytes = base64.b64encode(pdf_file.read())
         os.remove(f"{fileName}.pdf")
+        os.remove(f'{fileName}.wav')
         #Delete TXT file
         #os.remove("test.txt")
 
     except:
-         print('Sorry.. run again...')
+         return {"message": "Please Record again"}
 
-    return {"message": "works"}
+    return {"message": encoded_bytes.decode('utf-8')}
 
 
 @app.route('/sendNotes/OCR', methods =['POST'])
@@ -107,9 +110,9 @@ def sendMultipleImages():
                 content = image_file.read()
 
             image = vision.Image(content=content)
-
             response = client.document_text_detection(image=image)
             docText = response.full_text_annotation.text
+            print(docText)
             f= open("test.txt","a", encoding='utf-8')
             f.write('\n')
             f.write('\n')
@@ -136,7 +139,6 @@ def sendMultipleImages():
     with open(f"{fileName}.pdf", "rb") as pdf_file:
         encoded_bytes = base64.b64encode(pdf_file.read())
     os.remove(f"{fileName}.pdf")
-
 
     return {"output": encoded_bytes.decode('utf-8')}
  
