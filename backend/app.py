@@ -131,7 +131,7 @@ def sendNotes():
 
     return {"Generated PDF": encoded_string}
 
-@app.route('/sendNotes/OCR/multiple')
+@app.route('/sendNotes/OCR/multiple', methods =['POST'])
 def sendMultipleImages():
     toEmail = request.json['toEmail']
     fileName = request.json['fileName']
