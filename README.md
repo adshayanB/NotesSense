@@ -1,3 +1,7 @@
-# NotesPOC
+#NotesSense
 
-POC for a OCR app
+NotesSense - Hack the 6ix
+
+Categories:
+GCP 
+Accesiblity
