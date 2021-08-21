@@ -72,66 +72,8 @@ def sendNodesSpeech():
 
     return {"message": "works"}
 
-@app.route('/sendNotes/OCR', methods = ['POST'])
-def sendNotes():
-    toEmail = request.json['toEmail']
-    fileName = request.json['fileName']
-    imgString = request.json['image']
 
-    imgdata = base64.b64decode(imgString)
-    filename = 'converted.jpg'  #
-    with open(filename, 'wb') as f:
-        f.write(imgdata)
-    with io.open(filename, 'rb') as image_file:
-        content = image_file.read()
-
-    image = vision.Image(content=content)
-
-    response = client.document_text_detection(image=image)
-    
-    docText = response.full_text_annotation.text
-    f= open("test.txt","w+", encoding='utf-8')
-    f.write(docText)
-    print(docText)
-    if response.error.message:
-        return {"message": 'error'}
-   
-    EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
-    pdf = FPDF()   
-    
-    # Add a page
-    pdf.add_page()
-    pdf.set_font("Times", size = 15)
-
-    f = open("test.txt", "r")
-    for x in f:
-        pdf.cell(200, 10, txt = x, ln = 1, align = 'L')
-    
-    # Store the pdf created
-    pdf.output(f"{fileName}.pdf") 
-
-   # Create email service 
-    emailService = sendpdf("emailsendingpdf@gmail.com", 
-                f"{toEmail}", 
-                EMAIL_PASSWORD, 
-                f"{fileName} PDF Notes", 
-                "Your Notes Are Attached To This Email.", 
-                f"{fileName}", 
-                pathlib.Path().resolve()) 
-
-  #  send email
-    emailService.email_send()
-    #Create pdf string
-    with open(f"{fileName}.pdf", "rb") as pdf_file:
-        encoded_string = base64.b64encode(pdf_file.read())
-    os.remove(f"{fileName}.pdf")
-    os.remove(f"{filename}")
-    #Delete TXT file
-    #os.remove("test.txt")
-
-    return {"Generated PDF": encoded_string}
-
-@app.route('/sendNotes/OCR/multiple', methods =['POST'])
+@app.route('/sendNotes/OCR', methods =['POST'])
 def sendMultipleImages():
     toEmail = request.json['toEmail']
     fileName = request.json['fileName']
@@ -176,7 +118,6 @@ def sendMultipleImages():
             os.remove(f"{filename}")
 
      
-    EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
     pdf = FPDF()   
     
     # Add a page
@@ -190,17 +131,7 @@ def sendMultipleImages():
     # Store the pdf created
     pdf.output(f"{fileName}.pdf") 
 
-   # Create email service 
-    emailService = sendpdf("emailsendingpdf@gmail.com", 
-                f"{toEmail}", 
-                EMAIL_PASSWORD, 
-                f"{fileName} PDF Notes", 
-                "Your Notes Are Attached To This Email.", 
-                f"{fileName}", 
-                pathlib.Path().resolve()) 
-
-  #  send email
-    emailService.email_send()
+    emailService(toEmail, fileName)
     #Create pdf string
     with open(f"{fileName}.pdf", "rb") as pdf_file:
         encoded_string = base64.b64encode(pdf_file.read())
@@ -214,6 +145,24 @@ def deleteFile ():
     os.remove("test.txt")
 
     return {"message": "File deleted"}
+
+
+def emailService(toEmail, fileName):
+    EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+
+    # Create email service 
+    emailService = sendpdf("emailsendingpdf@gmail.com", 
+                f"{toEmail}", 
+                EMAIL_PASSWORD, 
+                f"{fileName} PDF Notes", 
+                "Your Notes Are Attached To This Email.", 
+                f"{fileName}", 
+                pathlib.Path().resolve()) 
+
+  #  send email
+    emailService.email_send()
+    return True
+
 
 if __name__ == "__main__":
     app.run(debug=True)
