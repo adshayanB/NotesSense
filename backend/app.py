@@ -17,16 +17,19 @@ load_dotenv()  # take environment variables from .env.
 
 @app.route('/sendNotes/Speech2Text', methods = ['POST'])
 def sendNodesSpeech():
-    toEmail = request.json['toEmail']
-    fileName = request.json['fileName']
+    toEmail = request.form['toEmail']
+    fileName = request.form['fileName']
 
     r = sr.Recognizer()
     EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
-    with sr.AudioFile('test.wav') as source:
+    f = request.files['audio']
+
+    with open ('test1.wav', 'wb') as audio:
+        f.save(audio)
+    with sr.AudioFile('test1.wav') as source:
         audio_text= r.listen(source)
-    try:
-        
+    try:   
         # using google speech recognition
         text = r.recognize_google(audio_text)
         print('Converting audio transcripts into text ...')
@@ -119,8 +122,7 @@ def sendNotes():
     #os.remove("test.txt")
 
     return {"message": "Emailed notes"}
-
-    
+ 
 @app.route('/deleteFile', methods =['DELETE'])
 def deleteFile ():
     os.remove("test.txt")
