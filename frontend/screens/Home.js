@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from 'react-native';
-import FloatingButton from '../components/floatingButton';
-import PdfList from '../components/pdfList.js';
+import { View, Text, StyleSheet } from "react-native";
+import FloatingButton from "../components/floatingButton";
+import PdfList from "../components/pdfList.js";
 import { Audio } from "expo-av";
+import * as FileSystem from "expo-file-system";
 import CustomPopupAlert from "../components/custom-popup-alert";
 
 const Home = ({ navigation }) => {
@@ -10,6 +11,27 @@ const Home = ({ navigation }) => {
   const [recording, setRecording] = useState();
   const [openRecorder, setOpenRecorder] = useState(false);
   const [sound, setSound] = useState();
+
+  const sendAudio = async (fileName) => {
+    const base64Audio = await FileSystem.readAsStringAsync(recording.getURI(), {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    console.log("BASE64");
+    console.log(base64Audio);
+
+    // let response;
+    // let json;
+    // const formData = FormData();
+    // formData.append(blob, "audio");
+
+    // response = await fetch("https://localhost:5000", {
+    //   method: "POST",
+    //   body: formData,
+    // });
+
+    // json = await response.json();
+    // console.log(json);
+  };
 
   const startRecording = async () => {
     try {
@@ -21,8 +43,28 @@ const Home = ({ navigation }) => {
       });
 
       //Initalize Recorder To Begin Recording
+      const options = {
+        android: {
+          extension: ".wav",
+          outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
+          audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
+          sampleRate: 44100,
+          numberOfChannels: 2,
+          bitRate: 128000,
+        },
+        ios: {
+          extension: ".wav",
+          audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_HIGH,
+          sampleRate: 44100,
+          numberOfChannels: 1,
+          bitRate: 128000,
+          linearPCMBitDepth: 16,
+          linearPCMIsBigEndian: false,
+          linearPCMIsFloat: false,
+        },
+      };
       const { recording: recorder } = await Audio.Recording.createAsync(
-        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+        options
       );
 
       setRecording(recorder);
@@ -37,21 +79,7 @@ const Home = ({ navigation }) => {
     await recording.stopAndUnloadAsync();
     const uri = recording.getURI();
     console.log("Recording stopped and stored at", uri);
-  };
-
-  const sendAudio = async (blob, fileName) => {
-    let response;
-    let json;
-    const formData = FormData();
-    formData.append(blob, "audio");
-
-    response = await fetch("https://localhost:5000", {
-      method: "POST",
-      body: formData,
-    });
-
-    json = await response.json();
-    console.log(json);
+    sendAudio();
   };
 
   async function playSound() {
@@ -116,9 +144,9 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#fff',
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#fff",
   },
   actionsContainer: {
     display: "flex",
