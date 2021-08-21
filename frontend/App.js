@@ -8,6 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import Home from './screens/Home';
+import CameraScreen from './screens/CameraScreen';
 
 const Stack = createStackNavigator();
 
@@ -36,12 +37,17 @@ export default function App() {
                 />
               ),
               headerTintColor: '#ffffff',
-              headerTitleStyle: { fontFamily: 'Oxygen-Bold', fontSize: 18},
+              headerTitleStyle: { fontFamily: 'Oxygen-Bold', fontSize: 18 },
               title: 'My Notes',
               headerLeft: null,
             }}
             name="Home"
             component={Home}
+          ></Stack.Screen>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="CameraScreen"
+            component={CameraScreen}
           ></Stack.Screen>
         </Stack.Navigator>
         <Toast ref={(ref) => Toast.setRef(ref)} />
