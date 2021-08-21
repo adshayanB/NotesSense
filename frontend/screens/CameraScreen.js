@@ -6,9 +6,15 @@ import {
   Dimensions,
   Platform,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import IconBadge from '../components/custom-iconBadge';
+import FloatingButton from '../components/floatingButton';
+import CustomPopupAlert from '../components/custom-popup-alert';
+import Toast from 'react-native-toast-message';
+import CustomInputBox from '../components/custom-inputBox';
+import { GestureHandlerRefContext } from '@react-navigation/stack';
 
 const CameraScreen = ({ navigation }) => {
   //  camera permissions
@@ -24,6 +30,16 @@ const CameraScreen = ({ navigation }) => {
   const [picture, setPicture] = useState(null);
   const [showPicture, setShowPicture] = useState(false);
   const [allPictures, setAllPictures] = useState([]);
+
+  const [confirmRetake, setConfirmRetake] = useState(false);
+  const [moreNotes, setMoreNotes] = useState(false);
+  const [submitForm, setSubmitForm] = useState(false);
+
+  const [showFetchLoading, setShowFetchLoading] = useState(false);
+  const [captureLoading, setCaptureLoading] = useState(false);
+
+  const [email, setEmail] = useState('');
+  const [filename, setFilename] = useState('');
 
   // on screen  load, ask for permission to use the camera
   useEffect(() => {
@@ -87,10 +103,79 @@ const CameraScreen = ({ navigation }) => {
 
   const takePicture = async () => {
     if (camera) {
+      setCaptureLoading(true);
       let photo = await camera.takePictureAsync({ base64: true });
       setPicture(photo);
       setShowPicture(true);
+      setCaptureLoading(false);
     }
+  };
+
+  const inputForm = () => {
+    return (
+      <View>
+        <CustomInputBox
+          field="Email"
+          placeholder="Enter your email"
+          onChange={setEmail}
+          value={email}
+        />
+        <CustomInputBox
+          field="Filename"
+          placeholder="Enter a filename"
+          onChange={setFilename}
+          value={filename}
+        />
+      </View>
+    );
+  };
+
+  const handleRepeat = () => {
+    setConfirmRetake(true);
+  };
+
+  const handleNext = () => {
+    setAllPictures([...allPictures, picture]);
+    setMoreNotes(true);
+  };
+
+  const handleSubmit = async () => {
+    setShowFetchLoading(true);
+    // POST allPictures to the API
+    let response;
+    let json;
+
+    response = await fetch('http://10.0.0.120:5000' + '/sendNotes/OCR', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        fileName: filename,
+        imageArray: allPictures.map((picture) => picture.base64),
+      }),
+    });
+
+    json = await response.json();
+
+    if (json.output) {
+      console.log(json.output);
+      Toast.show({
+        text1: 'Converted notes!',
+        text2: 'Successfully converted notes to a PDF',
+        type: 'success',
+      });
+      navigation.navigate('Home');
+    } else {
+      Toast.show({
+        text1: 'Error!',
+        text2: 'Something went wrong :(',
+        type: 'error',
+      });
+    }
+
+    setShowFetchLoading(false);
   };
 
   if (hasCameraPermission === null) {
@@ -110,34 +195,142 @@ const CameraScreen = ({ navigation }) => {
       <View style={styles.container}>
         {!showPicture && (
           <>
-            <Camera
-              style={[
-                styles.cameraPreview,
-                { marginTop: imagePadding, marginBottom: imagePadding },
-              ]}
-              onCameraReady={setCameraReady}
-              ratio={ratio}
-              zoom={0}
-              ref={(ref) => {
-                setCamera(ref);
+            <View
+              style={{
+                width,
+                height:
+                  (width * parseInt(ratio.split(':')[0])) /
+                  parseInt(ratio.split(':')[1]),
               }}
-            ></Camera>
+            >
+              <Camera
+                style={[styles.cameraPreview]}
+                onCameraReady={setCameraReady}
+                ratio={ratio}
+                zoom={0}
+                ref={(ref) => {
+                  setCamera(ref);
+                }}
+              ></Camera>
+            </View>
             <View style={styles.pictureIcon}>
-              <IconBadge
-                icon="circle"
-                library="FontAwesome"
-                color="#ffffff"
-                size={90}
-                onPress={takePicture}
-              />
+              {!captureLoading && (
+                <IconBadge
+                  icon="circle"
+                  library="FontAwesome"
+                  color="#ffffff"
+                  size={90}
+                  onPress={takePicture}
+                />
+              )}
+              {captureLoading && (
+                <View style={{ position: 'relative' }}>
+                  <ActivityIndicator size={90} color="#ffffff" />
+                </View>
+              )}
             </View>
           </>
         )}
         {showPicture && (
-          <Image
-            style={{ width: picture.width, height: picture.height }}
-            source={{ uri: picture.uri }}
-          />
+          <>
+            <Image
+              style={{
+                width,
+                height:
+                  (width * parseInt(ratio.split(':')[0])) /
+                  parseInt(ratio.split(':')[1]),
+              }}
+              source={{ uri: picture.uri }}
+            />
+            <View style={styles.actionsContainer}>
+              <FloatingButton
+                icon="repeat"
+                library="FontAwesome"
+                size={70}
+                onPress={() => handleRepeat()}
+                style={styles.action}
+              />
+              <FloatingButton
+                icon="arrowright"
+                library="AntDesign"
+                size={70}
+                onPress={() => handleNext()}
+                style={styles.action}
+              />
+            </View>
+            <CustomPopupAlert
+              open={confirmRetake}
+              title="Confirm Retake"
+              description="Are you sure you want to retake this picture?"
+              buttons={[
+                {
+                  text: 'No',
+                  type: 'outlined',
+                  onPress: () => {
+                    setConfirmRetake(false);
+                  },
+                },
+                {
+                  text: 'Yes',
+                  type: 'emphasized',
+                  onPress: () => {
+                    setShowPicture(false);
+                    setConfirmRetake(false);
+                  },
+                },
+              ]}
+            />
+            <CustomPopupAlert
+              open={moreNotes}
+              title="More Notes?"
+              description="Would you like to add another page of notes to this document?"
+              buttons={[
+                {
+                  text: 'No',
+                  type: 'outlined',
+                  onPress: () => {
+                    setMoreNotes(false);
+                    setSubmitForm(true);
+                  },
+                },
+                {
+                  text: 'Yes',
+                  type: 'emphasized',
+                  onPress: () => {
+                    setShowPicture(false);
+                    setMoreNotes(false);
+                  },
+                },
+              ]}
+            />
+            <CustomPopupAlert
+              open={submitForm}
+              title="Document Details"
+              renderComponent={inputForm()}
+              buttons={[
+                {
+                  text: 'Cancel',
+                  type: 'outlined',
+                  onPress: () => {
+                    setSubmitForm(false);
+                  },
+                },
+                {
+                  text: 'Convert',
+                  type: 'emphasized',
+                  onPress: () => {
+                    setSubmitForm(false);
+                    handleSubmit();
+                  },
+                },
+              ]}
+            />
+          </>
+        )}
+        {showFetchLoading && (
+          <View style={styles.backDrop}>
+            <ActivityIndicator size={70} color="#36d1dc" />
+          </View>
         )}
       </View>
     );
@@ -165,6 +358,31 @@ const styles = StyleSheet.create({
     left: '50%',
     transform: [{ translateX: -35 }],
     zIndex: 10,
+  },
+  actionsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    right: 20,
+    bottom: 15,
+    zIndex: 1,
+  },
+  action: {
+    marginVertical: 5,
+  },
+  backDrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000000cc',
+    zIndex: 2,
   },
 });
 

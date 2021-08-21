@@ -45,7 +45,12 @@ export default function App() {
             component={Home}
           ></Stack.Screen>
           <Stack.Screen
-            options={{ headerShown: false }}
+            options={{
+              headerTransparent: true,
+              headerBackTitle: 'Home',
+              headerTintColor: '#ffffff',
+              title: '',
+            }}
             name="CameraScreen"
             component={CameraScreen}
           ></Stack.Screen>

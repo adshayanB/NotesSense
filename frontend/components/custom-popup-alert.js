@@ -7,8 +7,8 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import IconBadge from '../iconBadge/custom-iconBadge';
-import CustomButton from '../button/custom-button';
+import IconBadge from './custom-iconBadge';
+import CustomButton from './custom-button';
 
 const CustomPopupAlert = ({
   open,
@@ -62,7 +62,7 @@ const CustomPopupAlert = ({
               <View style={styles.backIconWrapper}>
                 <IconBadge
                   noTouchOpacity={true}
-                  color='#ffffff'
+                  color="#ffffff"
                   size={100}
                   icon={'circle'}
                 />
