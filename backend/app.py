@@ -122,12 +122,14 @@ def sendNotes():
 
   #  send email
     emailService.email_send()
+    with open(f"{fileName}.pdf", "rb") as pdf_file:
+        encoded_string = base64.b64encode(pdf_file.read())
     os.remove(f"{fileName}.pdf")
     os.remove(f"{filename}")
     #Delete TXT file
     #os.remove("test.txt")
 
-    return {"message": "Emailed notes"}
+    return {"Generated PDF": encoded_string}
  
 @app.route('/deleteFile', methods =['DELETE'])
 def deleteFile ():
