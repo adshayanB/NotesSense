@@ -1,11 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import FloatingButton from '../components/floatingButton';
+import PdfList from '../components/pdfList.js'
 
 const Home = () => {
   return (
-    <View style={styles.actionsContainer}>
-      <View>
+    <View style={styles.mainContainer}>
+      <PdfList />
+      <View style={styles.actionsContainer}>
         <FloatingButton
           icon="mic"
           library="Feather"
@@ -26,6 +28,12 @@ const Home = () => {
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#fff",
+  },
   actionsContainer: {
     display: 'flex',
     flexDirection: 'column',

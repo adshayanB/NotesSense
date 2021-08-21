@@ -15,6 +15,7 @@ const FloatingButton = (props) => {
           styles.buttonContainer,
           { width: size, height: size, borderRadius: size / 2 },
         ]}
+        pointerEvents={'none'}
       >
         <IconBadge
           size={size / 2.2}
