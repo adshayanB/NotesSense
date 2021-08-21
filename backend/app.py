@@ -15,9 +15,13 @@ client = vision.ImageAnnotatorClient()
 
 load_dotenv()  # take environment variables from .env.
 
-@app.route('/sendNotes/Speech2Text')
+@app.route('/sendNotes/Speech2Text', methods = ['POST'])
 def sendNodesSpeech():
+    toEmail = request.json['toEmail']
+    fileName = request.json['fileName']
+
     r = sr.Recognizer()
+    EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
     with sr.AudioFile('test.wav') as source:
         audio_text= r.listen(source)
@@ -27,7 +31,38 @@ def sendNodesSpeech():
         text = r.recognize_google(audio_text)
         print('Converting audio transcripts into text ...')
         print(text)
-     
+        f= open("test.txt","w+", encoding='utf-8')
+        f.write(text)
+
+        pdf = FPDF()   
+    
+    # Add a page
+        pdf.add_page()
+        pdf.set_font("Times", size = 15)
+
+        f = open("test.txt", "r")
+        for x in f:
+            pdf.cell(200, 10, txt = x, ln = 1, align = 'L')
+        
+        # Store the pdf created
+        pdf.output(f"{fileName}.pdf") 
+
+
+    # Create email service 
+        emailService = sendpdf("emailsendingpdf@gmail.com", 
+                    f"{toEmail}", 
+                    EMAIL_PASSWORD, 
+                    f"{fileName} ", 
+                    "Your Notes Are Attached To This Email.", 
+                    f"{fileName}", 
+                    pathlib.Path().resolve()) 
+
+    #  send email
+        emailService.email_send()
+        os.remove(f"{fileName}.pdf")
+        #Delete TXT file
+        #os.remove("test.txt")
+
     except:
          print('Sorry.. run again...')
 
