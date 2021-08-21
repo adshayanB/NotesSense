@@ -52,7 +52,7 @@ def sendNotes():
     emailService = sendpdf("emailsendingpdf@gmail.com", 
                 f"{toEmail}", 
                 EMAIL_PASSWORD, 
-                f"{fileName} ", 
+                f"{fileName} PDF Notes", 
                 "Your Notes Are Attached To This Email.", 
                 f"{fileName}", 
                 pathlib.Path().resolve()) 
