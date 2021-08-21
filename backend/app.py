@@ -7,6 +7,7 @@ from flask import request, jsonify, Flask
 from google.cloud import vision
 import io
 
+
 app = Flask(__name__)
 client = vision.ImageAnnotatorClient()
 
@@ -14,6 +15,9 @@ load_dotenv()  # take environment variables from .env.
 
 @app.route('/sendNotes', methods = ['POST'])
 def sendNotes():
+    toEmail = request.json['toEmail']
+    fileName = request.json['fileName']
+
     path = 'test.png'
     with io.open(path, 'rb') as image_file:
         content = image_file.read()
@@ -41,21 +45,21 @@ def sendNotes():
         pdf.cell(200, 10, txt = x, ln = 1, align = 'L')
     
     # Store the pdf created
-    pdf.output("test.pdf") 
+    pdf.output(f"{fileName}.pdf") 
 
 
    # Create email service 
     emailService = sendpdf("emailsendingpdf@gmail.com", 
-                "myhealthpaluw@gmail.com", 
+                f"{toEmail}", 
                 EMAIL_PASSWORD, 
-                "Flask Request", 
-                "BODYYY", 
-                "test", 
+                f"{fileName} ", 
+                "Your Notes Are Attached To This Email.", 
+                f"{fileName}", 
                 pathlib.Path().resolve()) 
 
   #  send email
     emailService.email_send()
-    os.remove("test.pdf")
+    os.remove(f"{fileName}.pdf")
     #Delete TXT file
     #os.remove("test.txt")
 
