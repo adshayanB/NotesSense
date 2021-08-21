@@ -5,14 +5,34 @@ import os
 from dotenv import load_dotenv
 from flask import request, jsonify, Flask
 from google.cloud import vision
+import speech_recognition as sr
 import io
 
 app = Flask(__name__)
 client = vision.ImageAnnotatorClient()
 
+
 load_dotenv()  # take environment variables from .env.
 
-@app.route('/sendNotes', methods = ['POST'])
+@app.route('/sendNotes/Speech2Text')
+def sendNodesSpeech():
+    r = sr.Recognizer()
+
+    with sr.AudioFile('test.wav') as source:
+        audio_text= r.listen(source)
+    try:
+        
+        # using google speech recognition
+        text = r.recognize_google(audio_text)
+        print('Converting audio transcripts into text ...')
+        print(text)
+     
+    except:
+         print('Sorry.. run again...')
+
+    return {"message": "workes"}
+
+@app.route('/sendNotes/OCR', methods = ['POST'])
 def sendNotes():
     path = 'test.png'
     with io.open(path, 'rb') as image_file:
