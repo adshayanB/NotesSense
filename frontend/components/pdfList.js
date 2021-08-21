@@ -1,50 +1,77 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, FlatList, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import * as FileSystem from "expo-file-system";
 
-const PdfList = ({ list }) => {
-  const [people, setPeople] = useState([
-    { name: "shaun", id: "1" },
-    { name: "yoshi", id: "2" },
-    { name: "mario", id: "3" },
-    { name: "luigi", id: "4" },
-    { name: "peach", id: "5" },
-    { name: "toad", id: "6" },
-    { name: "bowser", id: "7" },
-  ]);
+const PdfList = (props) => {
+  const { updateList } = props;
+  const [docList, setDocList] = useState([]);
+
+  const getAllFilesInDirectory = async () => {
+    let tempList = [];
+    //get expo document directory
+    let dir = await FileSystem.readDirectoryAsync(
+      FileSystem.documentDirectory,
+      {
+        encoding: FileSystem.EncodingType.Base64,
+      }
+    );
+    // console.log(dir);
+    //for each item in the dir, append it to the docList state
+    dir.forEach((file) => {
+      tempList.push({
+        path: FileSystem.documentDirectory + file,
+        name: file,
+      });
+    });
+
+    setDocList(tempList);
+    // console.log(tempList);
+  };
+
+  // on screen  load all the pdf files saved on device
+  useEffect(() => {
+    getAllFilesInDirectory();
+    console.log(updateList);
+  }, [updateList]);
 
   const renderFiles = ({ item }) => {
     return (
-      <View style={styles.itemContainer}>
-        <Image
-          style={styles.fileImage}
-          source={require("../assets/favicon.png")}
-        />
+      <TouchableOpacity style={styles.itemContainer}>
+        <View style={styles.fileImage} />
         <View style={styles.textContainer}>
-          <Text style={styles.fileText}>{item.name}</Text>
+          <Text style={styles.fileText} numberOfLines={1}>
+            {item.name}
+          </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
-  if(people.length > 0 ) {
+  if (docList.length > 0) {
     return (
       <FlatList
         numColumns={2}
         columnWrapperStyle={styles.row}
-        keyExtractor={(item) => item.id}
-        data={people}
+        keyExtractor={(item) => item.name}
+        data={docList}
         renderItem={renderFiles}
         style={styles.container}
       />
     );
   } else {
-    return(
+    return (
       <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No Notes So Far :(</Text>
+        <Text style={styles.emptyText}>No Notes So Far :(</Text>
       </View>
-    )
+    );
   }
-    
 };
 
 export default PdfList;
@@ -55,9 +82,9 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   emptyText: {
     fontSize: 25,
@@ -70,10 +97,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 8,
     marginVertical: 8,
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "#eee",
     height: 200,
     borderRadius: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0.5,
       height: 2,
@@ -83,7 +110,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   row: {
-      justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
   },
   fileImage: {
     width: "100%",
@@ -91,7 +118,9 @@ const styles = StyleSheet.create({
     resizeMode: "stretch",
   },
   fileText: {
-    fontSize: 18,
+    fontSize: 15,
+    overflow: "hidden",
+    paddingHorizontal: 12,
   },
   textContainer: {
     flex: 1,
@@ -106,5 +135,5 @@ const styles = StyleSheet.create({
   emptyNotes: {
     flex: 1,
     display: "flex",
-  }
+  },
 });
