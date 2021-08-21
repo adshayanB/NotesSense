@@ -5,3 +5,4 @@ pdf_mail
 google-cloud
 google-cloud-vision
 flask
+SpeechRecognition
