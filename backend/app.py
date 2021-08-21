@@ -18,16 +18,20 @@ load_dotenv()  # take environment variables from .env.
 
 @app.route('/sendNotes/Speech2Text', methods = ['POST'])
 def sendNodesSpeech():
-    toEmail = request.form['toEmail']
-    fileName = request.form['fileName']
+    toEmail = request.json['toEmail']
+    fileName = request.json['fileName']
+    audioBlob = request.json['audioBlob']
+    audioData = base64.b64decode(audioBlob)
 
+    with open(f'{fileName}.wav', 'wb') as f:
+        f.write(audioData)
     r = sr.Recognizer()
     EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
-    f = request.files['audio']
+    # f = request.files['audio']
 
-    with open (f'{fileName}.wav', 'wb') as audio:
-        f.save(audio)
+    # with open (f'{fileName}.wav', 'wb') as audio:
+    #     f.save(audio)
     with sr.AudioFile(f'{fileName}.wav') as source:
         audio_text= r.listen(source)
     try:   
@@ -39,7 +43,6 @@ def sendNodesSpeech():
         f.write(text)
 
         pdf = FPDF()   
-    
     # Add a page
         pdf.add_page()
         pdf.set_font("Times", size = 15)
