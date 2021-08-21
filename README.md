@@ -3,5 +3,5 @@
 NotesSense - Hack the 6ix
 
 Categories:
-GCP 
+GCP <br>
 Accesiblity
