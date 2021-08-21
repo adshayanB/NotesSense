@@ -122,8 +122,7 @@ def sendNotes():
     #os.remove("test.txt")
 
     return {"message": "Emailed notes"}
-
-    
+ 
 @app.route('/deleteFile', methods =['DELETE'])
 def deleteFile ():
     os.remove("test.txt")
