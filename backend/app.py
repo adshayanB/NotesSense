@@ -88,14 +88,14 @@ def sendNotes():
     image = vision.Image(content=content)
 
     response = client.document_text_detection(image=image)
+    
     docText = response.full_text_annotation.text
     f= open("test.txt","w+", encoding='utf-8')
     f.write(docText)
     print(docText)
-   
     if response.error.message:
         return {"message": 'error'}
-
+   
     EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
     pdf = FPDF()   
     
@@ -130,6 +130,84 @@ def sendNotes():
     #os.remove("test.txt")
 
     return {"Generated PDF": encoded_string}
+
+@app.route('/sendNotes/OCR/multiple', methods =['POST'])
+def sendMultipleImages():
+    toEmail = request.json['toEmail']
+    fileName = request.json['fileName']
+    imageArray = request.json['imageArray']
+    for i in range(len(imageArray)):
+        if i==0:
+            imgdata = base64.b64decode(imageArray[i])
+            filename = f'converted{i}.jpg'  #
+            with open(filename, 'wb') as f:
+                f.write(imgdata)
+            with io.open(filename, 'rb') as image_file:
+                content = image_file.read()
+
+            image = vision.Image(content=content)
+
+            response = client.document_text_detection(image=image)
+            docText = response.full_text_annotation.text
+            print(docText)
+            f= open("test.txt","w+", encoding='utf-8')
+            f.write(docText)
+            if response.error.message:
+                 return {"message": response.error.message}
+            os.remove(f"{filename}")
+
+        else:
+            imgdata = base64.b64decode(imageArray[i])
+            filename = 'converted.jpg'  #
+            with open(filename, 'wb') as f:
+                f.write(imgdata)
+            with io.open(filename, 'rb') as image_file:
+                content = image_file.read()
+
+            image = vision.Image(content=content)
+
+            response = client.document_text_detection(image=image)
+            docText = response.full_text_annotation.text
+            f= open("test.txt","a", encoding='utf-8')
+            f.write('\n')
+            f.write('\n')
+            f.write('\n')
+            f.write(docText)
+            os.remove(f"{filename}")
+
+     
+    EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+    pdf = FPDF()   
+    
+    # Add a page
+    pdf.add_page()
+    pdf.set_font("Times", size = 15)
+
+    f = open("test.txt", "r")
+    for x in f:
+        pdf.cell(200, 10, txt = x, ln = 1, align = 'L')
+    
+    # Store the pdf created
+    pdf.output(f"{fileName}.pdf") 
+
+   # Create email service 
+    emailService = sendpdf("emailsendingpdf@gmail.com", 
+                f"{toEmail}", 
+                EMAIL_PASSWORD, 
+                f"{fileName} PDF Notes", 
+                "Your Notes Are Attached To This Email.", 
+                f"{fileName}", 
+                pathlib.Path().resolve()) 
+
+  #  send email
+    emailService.email_send()
+    #Create pdf string
+    with open(f"{fileName}.pdf", "rb") as pdf_file:
+        encoded_string = base64.b64encode(pdf_file.read())
+    os.remove(f"{fileName}.pdf")
+
+
+    return {"output": encoded_string}
  
 @app.route('/deleteFile', methods =['DELETE'])
 def deleteFile ():
