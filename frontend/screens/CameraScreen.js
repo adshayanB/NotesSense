@@ -14,6 +14,7 @@ import FloatingButton from '../components/floatingButton';
 import CustomPopupAlert from '../components/custom-popup-alert';
 import Toast from 'react-native-toast-message';
 import CustomInputBox from '../components/custom-inputBox';
+import * as FileSystem from 'expo-file-system';
 import { GestureHandlerRefContext } from '@react-navigation/stack';
 
 const CameraScreen = ({ navigation }) => {
@@ -113,19 +114,23 @@ const CameraScreen = ({ navigation }) => {
 
   const inputForm = () => {
     return (
-      <View>
-        <CustomInputBox
-          field="Email"
-          placeholder="Enter your email"
-          onChange={setEmail}
-          value={email}
-        />
-        <CustomInputBox
-          field="Filename"
-          placeholder="Enter a filename"
-          onChange={setFilename}
-          value={filename}
-        />
+      <View style={styles.inputContainer}>
+        <View style={{ marginVertical: 8 }}>
+          <CustomInputBox
+            field="Email"
+            placeholder="Enter your email"
+            onChange={setEmail}
+            value={email}
+          />
+        </View>
+        <View style={{ marginVertical: 8 }}>
+          <CustomInputBox
+            field="Filename"
+            placeholder="Enter a filename"
+            onChange={setFilename}
+            value={filename}
+          />
+        </View>
       </View>
     );
   };
@@ -151,7 +156,7 @@ const CameraScreen = ({ navigation }) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email,
+        toEmail: email,
         fileName: filename,
         imageArray: allPictures.map((picture) => picture.base64),
       }),
@@ -160,7 +165,11 @@ const CameraScreen = ({ navigation }) => {
     json = await response.json();
 
     if (json.output) {
-      console.log(json.output);
+      let pdfLocation =
+        FileSystem.documentDirectory + `${encodeURI(filename)}.pdf`;
+      await FileSystem.writeAsStringAsync(pdfLocation, json.output, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
       Toast.show({
         text1: 'Converted notes!',
         text2: 'Successfully converted notes to a PDF',
@@ -338,6 +347,10 @@ const CameraScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  inputContainer: {
+    width: '100%',
+    paddingHorizontal: 8,
+  },
   information: {
     flex: 1,
     justifyContent: 'center',

@@ -134,11 +134,11 @@ def sendMultipleImages():
     emailService(toEmail, fileName)
     #Create pdf string
     with open(f"{fileName}.pdf", "rb") as pdf_file:
-        encoded_string = base64.b64encode(pdf_file.read())
+        encoded_bytes = base64.b64encode(pdf_file.read())
     os.remove(f"{fileName}.pdf")
 
 
-    return {"output": encoded_string}
+    return {"output": encoded_bytes.decode('utf-8')}
  
 @app.route('/deleteFile', methods =['DELETE'])
 def deleteFile ():

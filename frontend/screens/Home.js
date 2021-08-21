@@ -16,8 +16,8 @@ const Home = ({ navigation }) => {
           style={styles.action}
         />
         <FloatingButton
-          icon="scan1"
-          library="AntDesign"
+          icon="camera"
+          library="Feather"
           size={70}
           onPress={() => navigation.navigate('CameraScreen')}
           style={styles.action}
