@@ -7,6 +7,7 @@ from flask import request, jsonify, Flask
 from google.cloud import vision
 import speech_recognition as sr
 import io
+import base64
 
 
 app = Flask(__name__)
@@ -75,9 +76,13 @@ def sendNodesSpeech():
 def sendNotes():
     toEmail = request.json['toEmail']
     fileName = request.json['fileName']
+    imgString = request.json['image']
 
-    path = 'test.png'
-    with io.open(path, 'rb') as image_file:
+    imgdata = base64.b64decode(imgString)
+    filename = 'converted.jpg'  #
+    with open(filename, 'wb') as f:
+        f.write(imgdata)
+    with io.open(filename, 'rb') as image_file:
         content = image_file.read()
 
     image = vision.Image(content=content)
@@ -118,6 +123,7 @@ def sendNotes():
   #  send email
     emailService.email_send()
     os.remove(f"{fileName}.pdf")
+    os.remove(f"{filename}")
     #Delete TXT file
     #os.remove("test.txt")
 
