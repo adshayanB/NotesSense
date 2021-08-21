@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import FloatingButton from '../components/floatingButton';
-import PdfList from '../components/pdfList.js'
+import PdfList from '../components/pdfList.js';
 
-const Home = () => {
+const Home = ({ navigation }) => {
   return (
     <View style={styles.mainContainer}>
       <PdfList />
@@ -12,14 +12,14 @@ const Home = () => {
           icon="mic"
           library="Feather"
           size={70}
-          onPress={() => console.log('button pressed')}
+          onPress={() => console.log('microphone pressed')}
           style={styles.action}
         />
         <FloatingButton
-          icon="scan1"
-          library="AntDesign"
+          icon="camera"
+          library="Feather"
           size={70}
-          onPress={() => console.log('button pressed')}
+          onPress={() => navigation.navigate('CameraScreen')}
           style={styles.action}
         />
       </View>
@@ -30,9 +30,9 @@ const Home = () => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#fff",
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#fff',
   },
   actionsContainer: {
     display: 'flex',
@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     bottom: 15,
+    zIndex: 2,
   },
   action: {
     marginVertical: 5,
