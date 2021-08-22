@@ -9,8 +9,7 @@ import {
 } from "react-native";
 import * as FileSystem from "expo-file-system";
 
-const PdfList = (props) => {
-  const { updateList } = props;
+const PdfList = ({ updateList, navigation }) => {
   const [docList, setDocList] = useState([]);
 
   const getAllFilesInDirectory = async () => {
@@ -22,7 +21,7 @@ const PdfList = (props) => {
         encoding: FileSystem.EncodingType.Base64,
       }
     );
-    // console.log(dir);
+
     //for each item in the dir, append it to the docList state
     dir.forEach((file) => {
       tempList.push({
@@ -32,7 +31,6 @@ const PdfList = (props) => {
     });
 
     setDocList(tempList);
-    // console.log(tempList);
   };
 
   // on screen  load all the pdf files saved on device
@@ -46,7 +44,10 @@ const PdfList = (props) => {
         style={styles.itemContainer}
         onPress={() => openPDFViewer(item)}
       >
-        <View style={styles.fileImage} />
+        <Image
+          style={styles.fileImage}
+          source={require("../assets/pdf_logo.png")}
+        />
         <View style={styles.textContainer}>
           <Text style={styles.fileText} numberOfLines={1}>
             {item.name}
@@ -57,7 +58,10 @@ const PdfList = (props) => {
   };
 
   const openPDFViewer = (item) => {
-    console.log("pdf clicked: " + item.name);
+    navigation.navigate("PDFReaderScreen", {
+      name: item.name,
+      path: item.path,
+    });
   };
 
   if (docList.length > 0) {
@@ -120,8 +124,9 @@ const styles = StyleSheet.create({
   },
   fileImage: {
     width: "100%",
-    flex: 5,
-    resizeMode: "stretch",
+    flex: 3,
+    resizeMode: "contain",
+    margin: 30,
   },
   fileText: {
     fontSize: 15,
