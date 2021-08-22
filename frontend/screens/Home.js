@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import FloatingButton from "../components/floatingButton";
-import PdfList from "../components/pdfList.js";
-import { Audio } from "expo-av";
-import * as FileSystem from "expo-file-system";
-import CustomPopupAlert from "../components/custom-popup-alert";
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import FloatingButton from '../components/floatingButton';
+import PdfList from '../components/pdfList.js';
+import { Audio } from 'expo-av';
+import * as FileSystem from 'expo-file-system';
+import CustomPopupAlert from '../components/custom-popup-alert';
 
 const Home = ({ navigation }) => {
   const [updateList, setUpdateList] = useState(false);
@@ -16,7 +16,7 @@ const Home = ({ navigation }) => {
     const base64Audio = await FileSystem.readAsStringAsync(recording.getURI(), {
       encoding: FileSystem.EncodingType.Base64,
     });
-    console.log("BASE64");
+    console.log('BASE64');
     console.log(base64Audio);
 
     // let response;
@@ -35,7 +35,7 @@ const Home = ({ navigation }) => {
 
   const startRecording = async () => {
     try {
-      console.log("Requesting permissions..");
+      console.log('Requesting permissions..');
       await Audio.requestPermissionsAsync();
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
@@ -45,7 +45,7 @@ const Home = ({ navigation }) => {
       //Initalize Recorder To Begin Recording
       const options = {
         android: {
-          extension: ".wav",
+          extension: '.wav',
           outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
           audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
           sampleRate: 44100,
@@ -53,7 +53,7 @@ const Home = ({ navigation }) => {
           bitRate: 128000,
         },
         ios: {
-          extension: ".wav",
+          extension: '.wav',
           audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_HIGH,
           sampleRate: 44100,
           numberOfChannels: 1,
@@ -69,7 +69,7 @@ const Home = ({ navigation }) => {
 
       setRecording(recorder);
     } catch (err) {
-      console.error("Failed to start recording", err);
+      console.error('Failed to start recording', err);
     }
   };
 
@@ -78,12 +78,12 @@ const Home = ({ navigation }) => {
     //setRecording(undefined);
     await recording.stopAndUnloadAsync();
     const uri = recording.getURI();
-    console.log("Recording stopped and stored at", uri);
+    console.log('Recording stopped and stored at', uri);
     sendAudio();
   };
 
   async function playSound() {
-    console.log("Loading Sound");
+    console.log('Loading Sound');
     const { sound } = await Audio.Sound.createAsync(
       { uri: recording.getURI() },
       {
@@ -93,7 +93,7 @@ const Home = ({ navigation }) => {
     //await sound.setPositionAsync(0);
     setSound(sound);
 
-    console.log("Playing Sound");
+    console.log('Playing Sound');
     await sound.playAsync();
   }
 
@@ -121,16 +121,16 @@ const Home = ({ navigation }) => {
         title="Record Audio"
         buttons={[
           {
-            text: "Stop",
-            type: "outlined",
+            text: 'Stop',
+            type: 'outlined',
             onPress: () => {
               stopRecording();
               setOpenRecorder(false);
             },
           },
           {
-            text: "Start",
-            type: "emphasized",
+            text: 'Start',
+            type: 'emphasized',
             onPress: () => {
               startRecording();
             },
@@ -144,16 +144,16 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#fff",
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#fff',
   },
   actionsContainer: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
     right: 20,
     bottom: 15,
     zIndex: 2,
