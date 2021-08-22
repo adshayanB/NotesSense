@@ -99,7 +99,7 @@ const Home = ({ navigation }) => {
 
   return (
     <View style={styles.mainContainer}>
-      <PdfList updateList={updateList} />
+      <PdfList updateList={updateList} navigation={navigation} />
       <View style={styles.actionsContainer}>
         <FloatingButton
           icon="mic"
