@@ -10,7 +10,7 @@ Back at university, we had a friend who couldn't see the professor's notes durin
 
 
 <h3>What it does 🤔</h3>
-NoteSense is a notes accessibility app that allows users to create notes based on  images or audio snippets. Through harnessing technologies such as speech recognition and optical character recognition (OCR) users who have hearing deficits or vision impairment can quickly create notes in a format they can access quickly and conveniently! Our platform quickly converts their image or audio they took from their mobile device to a  PDF that is sent to their email! This way users can quickly stay on track during their lectures and not feel behind or at a disadvantage compared to their colleagues. Users also have the ability to view their generated PDFs on their device for quick viewing as well!
+NoteSense is a notes accessibility app that allows users to create notes based on  images or audio snippets. Through harnessing technologies such as speech recognition and optical character recognition (OCR) users who have hearing deficits or vision impairment can create notes in a format they can access quickly and conveniently! Our platform quickly converts their image or audio they took from their mobile device to a  PDF that is sent to their email! This way users can quickly stay on track during their lectures and not feel behind or at a disadvantage compared to their colleagues. Users also have the ability to view their generated PDFs on their device for quick viewing as well!
 
 <h3>How we built it 🖥️</h3>
 When building out NotesSense, we chose 3 key design principles to help ensure our product meets the design challenge of accessibility! Simplicity, Elegance and Scalability.
