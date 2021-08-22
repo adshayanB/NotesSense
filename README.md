@@ -2,7 +2,7 @@
 2021 Hack the 6ix <br>
 NotesSense is a notes accessibility mobile application that aids users who have hearing and vision impairments to create notes based on an image or audio in real time! <br>
 
-Devpost: <br>
+Devpost: https://devpost.com/software/notesense <br>
 Demo: <br>
 
 <h3>Inspiration 💡</h3>
