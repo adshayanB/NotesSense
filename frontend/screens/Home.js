@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import FloatingButton from "../components/floatingButton";
 import PdfList from "../components/pdfList.js";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import CustomPopupAlert from "../components/custom-popup-alert";
 import Toast from "react-native-toast-message";
+import CustomInputBox from "../components/custom-inputBox";
+import { LinearGradient } from "expo-linear-gradient";
+import Loading from "../assets/loading/loading.gif";
 
 const Home = ({ navigation }) => {
   const [updateList, setUpdateList] = useState(false);
@@ -17,6 +20,7 @@ const Home = ({ navigation }) => {
   const [showFetchLoading, setShowFetchLoading] = useState(false);
 
   const sendAudio = async () => {
+    setSubmitForm(false);
     setShowFetchLoading(true);
     let response;
     let json;
@@ -25,17 +29,20 @@ const Home = ({ navigation }) => {
     });
     console.log("BASE64");
     console.log(base64Audio);
-    response = await fetch("https://localhost:5000", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        toEmail: email,
-        fileName: filename,
-        audioBlob: base64Audio,
-      }),
-    });
+    response = await fetch(
+      "http://192.168.2.191:5000" + "/sendNotes/Speech2Text",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          toEmail: email,
+          fileName: filename,
+          audioBlob: base64Audio,
+        }),
+      }
+    );
 
     json = await response.json();
 
@@ -57,7 +64,7 @@ const Home = ({ navigation }) => {
         type: "error",
       });
     }
-    setSubmitForm(false);
+
     setShowFetchLoading(false);
     setUpdateList(!updateList);
   };
@@ -231,6 +238,10 @@ const Home = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  inputContainer: {
+    width: "100%",
+    paddingHorizontal: 8,
+  },
   mainContainer: {
     flex: 1,
     width: "100%",
