@@ -3,7 +3,7 @@
 NotesSense is a notes accessibility mobile application that aids users who have hearing and vision impairments to create notes based on an image or audio in real time! <br>
 
 Devpost: https://devpost.com/software/notesense <br>
-Demo: <br>
+Demo: https://www.youtube.com/watch?v=Fy7wBgAzpLs <br>
 
 <h3>Inspiration 💡</h3>
 Back at university, we had a friend who couldn't see the professor's notes during lectures so he needed to take pictures, and often fell behind in class. But what if there was a way to take the pictures and convert them straight to notes? Introducing NoteSense, the fast and easy way to digitize captured photos and audio into ready to use typed up notes.
